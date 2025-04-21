@@ -1,0 +1,38 @@
+[gd_scene load_steps=5 format=3 uid="uid://rynlukeo3a1v"]
+
+[ext_resource type="Texture2D" uid="uid://cle6d2yqo2k4w" path="res://icon.svg" id="1_66fg8"]
+[ext_resource type="Script" path="res://Scripts/player.gd" id="2_cur6y"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_df0xn"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_jnv4e"]
+size = Vector2(347, 20)
+
+[node name="World" type="Node2D"]
+
+[node name="Player" type="CharacterBody2D" parent="." node_paths=PackedStringArray("checkBox")]
+script = ExtResource("2_cur6y")
+checkBox = NodePath("../CheckBox")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player"]
+shape = SubResource("CapsuleShape2D_df0xn")
+disabled = true
+
+[node name="Sprite2D" type="Sprite2D" parent="Player"]
+position = Vector2(-3.57628e-07, 1.43051e-06)
+scale = Vector2(0.15625, 0.234375)
+texture = ExtResource("1_66fg8")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2(0, 148)
+shape = SubResource("RectangleShape2D_jnv4e")
+
+[node name="CheckBox" type="CheckBox" parent="."]
+offset_left = -556.0
+offset_top = -302.0
+offset_right = -532.0
+offset_bottom = -278.0
