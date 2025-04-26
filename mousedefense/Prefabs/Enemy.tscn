@@ -1,0 +1,74 @@
+[gd_scene load_steps=11 format=3 uid="uid://33ngr5yaxfle"]
+
+[ext_resource type="Script" path="res://Scripts/SimpleEnemyAI.gd" id="1_o0mwq"]
+[ext_resource type="Script" path="res://Scripts/ShipHittable.gd" id="2_ohe5w"]
+[ext_resource type="Script" path="res://Scripts/Ship.gd" id="3_5ff0u"]
+[ext_resource type="PackedScene" uid="uid://bkncd2cagcuu6" path="res://Prefabs/Explosion.tscn" id="3_vork0"]
+[ext_resource type="Texture2D" uid="uid://bv8y6oy11tliv" path="res://Textures/Dasher_Diffuse.png" id="4_ttg65"]
+[ext_resource type="Texture2D" uid="uid://dg7s0cw02e81x" path="res://Textures/Dasher_Normal.png" id="5_0cj1m"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_4rrch"]
+size = Vector2(8, 8)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_p768l"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_c1g5k"]
+radius = 5.0
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_7ud0t"]
+diffuse_texture = ExtResource("4_ttg65")
+normal_texture = ExtResource("5_0cj1m")
+
+[node name="Enemy" type="CharacterBody2D" node_paths=PackedStringArray("castChecker", "collider", "hittableHealth")]
+script = ExtResource("1_o0mwq")
+moveSpeed = 400.0
+slowDown = 5.0
+castChecker = NodePath("ShapeCast2D")
+collider = NodePath("ShipHittable")
+hittableHealth = NodePath("ShipHittable")
+
+[node name="ShipHittable" type="Area2D" parent="." node_paths=PackedStringArray("primarySprite", "damageSprite", "rootParent", "timer", "checkTimer")]
+script = ExtResource("2_ohe5w")
+maxHealth = 5.0
+primarySprite = NodePath("../Rotator/MainTexture")
+damageSprite = NodePath("../Rotator/DamageTexture")
+pulseSpeed = 1.0
+deathVFX = ExtResource("3_vork0")
+rootParent = NodePath("..")
+timer = NodePath("../Cleanuptimer")
+checkTimer = NodePath("../CheckTimer")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ShipHittable"]
+position = Vector2(2, 0)
+shape = SubResource("RectangleShape2D_4rrch")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_p768l")
+disabled = true
+
+[node name="ShapeCast2D" type="ShapeCast2D" parent="."]
+shape = SubResource("CircleShape2D_c1g5k")
+target_position = Vector2(0, 0)
+
+[node name="Rotator" type="Node2D" parent="." node_paths=PackedStringArray("charController")]
+script = ExtResource("3_5ff0u")
+charController = NodePath("..")
+rotSpeed = 10.0
+
+[node name="MainTexture" type="Sprite2D" parent="Rotator"]
+texture_filter = 1
+rotation = 1.5708
+texture = SubResource("CanvasTexture_7ud0t")
+
+[node name="DamageTexture" type="Sprite2D" parent="Rotator"]
+visible = false
+rotation = 1.5708
+
+[node name="Cleanuptimer" type="Timer" parent="."]
+
+[node name="CheckTimer" type="Timer" parent="."]
+wait_time = 0.01
+autostart = true
+
+[connection signal="body_entered" from="ShipHittable" to="ShipHittable" method="_on_body_entered"]
+[connection signal="timeout" from="CheckTimer" to="ShipHittable" method="Check"]

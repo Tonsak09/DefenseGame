@@ -12,7 +12,7 @@ var spawn_position := Vector2(0, 0)
 var last_move_dir := Vector2.ZERO
 
 #@onready var animation = $AnimatedSprite2D
-@onready var replay_clone_scene = preload("res://Scenes/ReplayClone.tscn")
+@onready var replay_clone_scene = preload("res://Prefabs/ReplayClone.tscn")
 
 var replay_clone : Node = null
 
@@ -100,3 +100,7 @@ func spawn_replay_clone():
 	replay_clone.global_position = global_position #spawn_position
 	replay_clone.start_replay(input_log.duplicate(true)) # Deep copy input log
 	# replay_clone.get_node("AnimatedSprite2D").modulate = Color(0.5, 0.5, 0.5, 0.8) # Tint ghost
+
+
+func Damage():
+	print_debug("Hit")

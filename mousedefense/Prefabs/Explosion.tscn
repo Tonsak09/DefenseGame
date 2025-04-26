@@ -1,0 +1,24 @@
+[gd_scene load_steps=4 format=3 uid="uid://bkncd2cagcuu6"]
+
+[ext_resource type="Texture2D" uid="uid://blvdb4w6iq1g" path="res://Textures/Circle.png" id="1_d4r2f"]
+[ext_resource type="Script" path="res://Scripts/Explossion.gd" id="2_x52yk"]
+
+[sub_resource type="Curve" id="Curve_ek2tq"]
+_data = [Vector2(0, 0), 0.0, 1.4, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[node name="Explosion" type="Sprite2D" node_paths=PackedStringArray("timer")]
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("1_d4r2f")
+script = ExtResource("2_x52yk")
+timer = NodePath("Timer")
+startScale = Vector2(0.2, 0.2)
+scaleCurve = SubResource("Curve_ek2tq")
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 0.8
+one_shot = true
+autostart = true
+
+[node name="PointLight2D" type="PointLight2D" parent="."]
+texture = ExtResource("1_d4r2f")
