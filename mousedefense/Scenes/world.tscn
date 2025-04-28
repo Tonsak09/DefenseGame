@@ -1,46 +1,65 @@
-[gd_scene load_steps=7 format=3 uid="uid://rynlukeo3a1v"]
+[gd_scene load_steps=12 format=3 uid="uid://rynlukeo3a1v"]
 
-[ext_resource type="Texture2D" uid="uid://cle6d2yqo2k4w" path="res://icon.svg" id="1_66fg8"]
+[ext_resource type="Shader" uid="uid://dwc68s42sj2it" path="res://Scrollable.tres" id="1_dflnt"]
 [ext_resource type="Script" path="res://Scripts/player.gd" id="2_cur6y"]
+[ext_resource type="Texture2D" uid="uid://gjy8fbu7ck03" path="res://Speckle.png" id="2_icwyi"]
+[ext_resource type="Texture2D" uid="uid://blvdb4w6iq1g" path="res://Textures/Circle.png" id="2_qdmmf"]
 [ext_resource type="PackedScene" uid="uid://33ngr5yaxfle" path="res://Prefabs/Enemy.tscn" id="3_dljki"]
-[ext_resource type="PackedScene" uid="uid://bkncd2cagcuu6" path="res://Prefabs/Explosion.tscn" id="4_ajqt0"]
 [ext_resource type="Script" path="res://Scripts/Spawner.gd" id="5_alqhv"]
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_df0xn"]
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_bisxh"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_f3hcq"]
+noise = SubResource("FastNoiseLite_bisxh")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ldkw1"]
+shader = ExtResource("1_dflnt")
+shader_parameter/PaletteCount = 5
+shader_parameter/CellCount = 20.0
+shader_parameter/ScreenRatio = Vector2(400, 400)
+shader_parameter/ScrollSpeed = 0.01
+shader_parameter/PalleteNoise = SubResource("NoiseTexture2D_f3hcq")
+shader_parameter/PatternPalette = ExtResource("2_icwyi")
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ch4kn"]
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_iur56"]
+diffuse_texture = ExtResource("2_qdmmf")
 
 [node name="World" type="Node2D"]
 
-[node name="Player" type="CharacterBody2D" parent="." node_paths=PackedStringArray("checkBox")]
+[node name="ColorRect" type="ColorRect" parent="."]
+modulate = Color(0.273873, 0.273873, 0.273873, 1)
+material = SubResource("ShaderMaterial_ldkw1")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -200.0
+offset_top = -200.0
+offset_right = 200.0
+offset_bottom = 200.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Player" type="CharacterBody2D" parent="." node_paths=PackedStringArray("progBar", "timeKeep")]
 script = ExtResource("2_cur6y")
-checkBox = NodePath("../CheckBox")
+progBar = NodePath("../Control/ProgressBar")
+timeKeep = NodePath("../Label")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Player"]
-shape = SubResource("CapsuleShape2D_df0xn")
+shape = SubResource("CircleShape2D_ch4kn")
 disabled = true
 
 [node name="Sprite2D" type="Sprite2D" parent="Player"]
-position = Vector2(-3.57628e-07, 1.43051e-06)
-scale = Vector2(0.2, 0.2)
-texture = ExtResource("1_66fg8")
+texture_filter = 1
+position = Vector2(-4.76837e-07, 0)
+scale = Vector2(0.210313, 0.200313)
+texture = SubResource("CanvasTexture_iur56")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 
-[node name="CheckBox" type="CheckBox" parent="."]
-offset_left = -556.0
-offset_top = -302.0
-offset_right = -532.0
-offset_bottom = -278.0
-
-[node name="Enemy" parent="." node_paths=PackedStringArray("player", "camera") instance=ExtResource("3_dljki")]
-position = Vector2(122, -132)
-player = NodePath("../Player")
-camera = NodePath("../Camera2D")
-
 [node name="DirectionalLight2D" type="DirectionalLight2D" parent="."]
-color = Color(0, 0.706039, 0.708936, 1)
-energy = 0.1
-
-[node name="Explosion" parent="." instance=ExtResource("4_ajqt0")]
+color = Color(5.19812e-06, 0.836811, 0.840206, 1)
 
 [node name="Spawner" type="Node2D" parent="." node_paths=PackedStringArray("player", "camera", "spawnTimer", "spawnNodes")]
 script = ExtResource("5_alqhv")
@@ -48,7 +67,7 @@ entities = ExtResource("3_dljki")
 player = NodePath("../Player")
 camera = NodePath("../Camera2D")
 spawnTimer = NodePath("SpawnTimer")
-spawnNodes = [NodePath("Node2D"), NodePath("Node2D2"), NodePath("Node2D3")]
+spawnNodes = [NodePath("Node2D"), NodePath("Node2D2"), NodePath("Node2D3"), NodePath("Node2D4"), NodePath("Node2D5")]
 spawnRadius = 1.0
 
 [node name="SpawnTimer" type="Timer" parent="Spawner"]
@@ -56,12 +75,52 @@ wait_time = 0.5
 autostart = true
 
 [node name="Node2D" type="Node2D" parent="Spawner"]
-position = Vector2(-174, -183)
+position = Vector2(-200, -200)
 
 [node name="Node2D2" type="Node2D" parent="Spawner"]
-position = Vector2(-51, -175)
+position = Vector2(0, -200)
 
 [node name="Node2D3" type="Node2D" parent="Spawner"]
-position = Vector2(8, -182)
+position = Vector2(200, -200)
+
+[node name="Node2D4" type="Node2D" parent="Spawner"]
+position = Vector2(200, 0)
+
+[node name="Node2D5" type="Node2D" parent="Spawner"]
+position = Vector2(-200, 0)
+
+[node name="Node2D6" type="Node2D" parent="Spawner"]
+position = Vector2(200, 200)
+
+[node name="Node2D7" type="Node2D" parent="Spawner"]
+position = Vector2(-200, 200)
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ProgressBar" type="ProgressBar" parent="Control"]
+layout_mode = 0
+offset_left = -50.0
+offset_top = 171.0
+offset_right = 50.0
+offset_bottom = 198.0
+max_value = 5.0
+
+[node name="CanvasModulate" type="CanvasModulate" parent="."]
+color = Color(0.501407, 0.501406, 0.501406, 1)
+
+[node name="Label" type="Label" parent="."]
+offset_left = 158.0
+offset_top = 175.0
+offset_right = 198.0
+offset_bottom = 198.0
+text = "00
+"
+horizontal_alignment = 1
 
 [connection signal="timeout" from="Spawner/SpawnTimer" to="Spawner" method="SpawnEntities"]

@@ -1,6 +1,7 @@
 extends CharacterBody2D
 
-@export var checkBox : CheckBox
+@export var progBar : ProgressBar
+@export var timeKeep : Label
 
 const SPEED = 80.0
 const JUMP_VELOCITY = -400.0
@@ -10,6 +11,7 @@ var input_log = []
 var is_recording = false
 var spawn_position := Vector2(0, 0)
 var last_move_dir := Vector2.ZERO
+var time : float 
 
 #@onready var animation = $AnimatedSprite2D
 @onready var replay_clone_scene = preload("res://Prefabs/ReplayClone.tscn")
@@ -22,6 +24,9 @@ func _ready():
 
 
 func _physics_process(delta):
+	
+	time += delta 
+	timeKeep.text = str(int(time))
 	# Apply gravity
 	if not is_on_floor():
 		velocity.y += gravity * delta
@@ -38,7 +43,12 @@ func _physics_process(delta):
 	if (Input.get_action_strength("start_record")):
 		is_recording = true; 
 	
-	checkBox.button_pressed = is_recording
+	
+	if progBar.value >= progBar.max_value:
+		is_recording = false
+	
+	if is_recording:
+		progBar.value += delta
 	
 	# Animation logic
 	if h != 0 or v != 0:
@@ -78,11 +88,11 @@ func _input(event):
 
 
 func start_replay():
-	
 	if replay_clone != null and is_instance_valid(replay_clone):
 		replay_clone.queue_free()
 		replay_clone = null
 	
+	progBar.value = 0
 	is_recording = false
 	#global_position = spawn_position
 	

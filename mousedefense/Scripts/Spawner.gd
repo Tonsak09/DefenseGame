@@ -37,6 +37,8 @@ func SpawnEntities():
 	entity.player = player
 	entity.camera = camera
 	entity.origin = self
+	
+	SwapSpawner()
 
 
 func StopTimer():

@@ -38,6 +38,8 @@ func _process(delta: float) -> void:
 	
 	if(d.length_squared() <= 20):
 		hittableHealth.health = -1;
+		get_tree().reload_current_scene()
+
 	
 	# Vel away from group 
 	var count = min(castChecker.get_collision_count(), 3) 
